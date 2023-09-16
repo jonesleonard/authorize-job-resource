@@ -23,7 +23,7 @@ resource_types:
   - name: authorize-job
     type: docker-image
     source:
-      repository: jonesleonard/authorize-job-resource
+      repository: leojones/authorize-job-resource
       tag: latest
 
 resources:
