@@ -46,6 +46,29 @@ resources:
       access_token: ((github-access-token))
 ```
 
+## Behavior
+
+This resource is intended to be used as a `put` resource. It will authorize the specified users and/or teams to run a
+job within a Concourse pipeline.
+
+### `check`: No-Op
+
+### `in`: No-Op
+
+### `out`: Authorize Users and/or Teams
+
+Authorize the specified users and/or teams to run a job within a Concourse pipeline.
+
+#### Put Example
+
+```yaml
+jobs:
+  - name: my-job
+    plan:
+      - put: authorize-job
+      - ... # the rest of the job plan
+```
+
 ## Implementation Details
 
 The resource authorizes users and/or teams to run a job within a GitHub organization. It relies on
