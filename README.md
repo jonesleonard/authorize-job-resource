@@ -15,6 +15,8 @@ extends [karthikraina32/concourse-trigger-guard](https://github.com/karthikraina
 * `users`: *Optional.* The name of the user to authorize. Required if `teams` is not specified.
 * `access_token`: *Required.* A GitHub token with `read:org` scope.
 * `ghe_host`: *Optional.* The hostname of the GitHub Enterprise instance to communicate with the GitHub API.
+* `suffix`: *Optional.* A suffix to append to the `$BUILD_CREATED_BY` metadata environment variable. This is useful when
+  using GitHub Enterprise Cloud and your company appends a suffix to the username.
 
 ### Source Example
 
