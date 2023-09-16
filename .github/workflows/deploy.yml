@@ -24,19 +24,6 @@ jobs:
     - name: Echo version
       run: |
         echo ${{ steps.version.outputs.version }}
-    - name: Docker meta
-      id: meta
-      uses: docker/metadata-action@v5
-      with:
-        images: leojones/authorization-resource
-        # generate Docker tags based on the following events/attributes
-        tags: |
-          type=schedule
-          type=ref,event=branch
-          type=ref,event=pr
-          type=semver,pattern={{version}}
-          type=semver,pattern={{major}}.{{minor}}
-          type=semver,pattern={{major}}
     - name: Set up QEMU
       uses: docker/setup-qemu-action@v3
     - name: Set up Docker Buildx
@@ -50,5 +37,7 @@ jobs:
       uses: docker/build-push-action@v5
       with:
         push: true
-        tags: ${{ steps.meta.outputs.tags }}
+        tags:  |
+          ${{ secrets.DOCKER_HUB_USERNAME }}/authorization-resource:${{ steps.version.outputs.version }}
+          ${{ secrets.DOCKER_HUB_USERNAME }}/authorization-resource:latest
           
