@@ -1,7 +1,7 @@
 # authorize-job-resource
 
-A [Concourse](https://concourse-ci.org/) resource to authorize a job to run depending on a user's GitHub username or
-membership within a team.
+A [Concourse](https://concourse-ci.org/) resource to only allow specified users and/or teams to run a job within a
+Concourse pipeline.
 
 ## Source Configuration
 
