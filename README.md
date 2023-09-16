@@ -1,4 +1,4 @@
-![deploy](https://github.com/jonesleonard/authorize-job-resource/actions/workflows/deploy/badge.svg)
+![deploy](https://github.com/jonesleonard/authorize-job-resource/actions/workflows/deploy.yml/badge.svg)
 
 # authorize-job-resource
 
