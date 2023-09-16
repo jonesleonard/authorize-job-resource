@@ -40,6 +40,6 @@ jobs:
       with:
         push: true
         tags:  |
-          ${{ secrets.DOCKERHUB_USERNAME }}/authorization-resource:${{ steps.version.outputs.version }}
-          ${{ secrets.DOCKERHUB_USERNAME }}/authorization-resource:latest
+          ${{ secrets.DOCKERHUB_USERNAME }}/authorize-job-resource:${{ steps.version.outputs.version }}
+          ${{ secrets.DOCKERHUB_USERNAME }}/authorize-job-resource:latest
           
