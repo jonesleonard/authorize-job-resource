@@ -5,8 +5,8 @@
 A [Concourse](https://concourse-ci.org/) resource to only allow specified GitHub users and/or teams to run a job within
 a Concourse pipeline.
 
-This resource
-extends [karthikraina32/concourse-trigger-guard](https://github.com/karthikraina32/concourse-trigger-guard).
+This resource builds off of the work
+in [karthikraina32/concourse-trigger-guard](https://github.com/karthikraina32/concourse-trigger-guard).
 
 ## Source Configuration
 
