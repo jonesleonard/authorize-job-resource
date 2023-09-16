@@ -1,14 +1,12 @@
 #!/bin/bash
 
-
 set -e -u
+
 exec 3>&1 # make stdout available as fd 3 for the result
 exec 1>&2 # redirect all output to stderr for logging
 
-
 payload="$(cat <&0)"
-gh_token=$(jq -r '.source.gh_token // ""' <<< "$payload")
-ghe_token=$(jq -r '.source.ghe_token // ""' <<< "$payload")
+access_token=$(jq -r '.source.gh_token // ""' <<< "$payload")
 ghe_host=$(jq -r '.source.ghe_host // ""' <<< "$payload")
 org=$(jq -r '.source.org // ""' <<< "$payload")
 total_number_of_users=$(jq -r '.source.users // ""' <<< "$payload" | wc -l)
@@ -16,19 +14,10 @@ number_of_users=$(echo $(expr $total_number_of_users - 2))
 total_number_of_teams=$(jq -r '.source.teams // ""' <<< "$payload" | wc -l)
 number_of_teams=$(echo $(expr $total_number_of_teams - 2))
 
-
 is_valid=0
-
-
-# set the github token
-export GH_TOKEN=$gh_token
-export GH_ENTERPRISE_TOKEN=$ghe_token
-export GH_HOST=$ghe_host
-
 
 # enable debug
 export GH_DEBUG=1
-
 
 check_if_valid_user() {
  if [ "$number_of_users" -gt 0 ]; then
@@ -46,8 +35,10 @@ check_if_valid_user() {
  fi
 }
 
+check_if_valid_gh_team_member() {
+# set the github token
+export GH_TOKEN=$access_token
 
-check_if_valid_ghec_team_member() {
 if [ "$number_of_teams" -gt 0 ]; then
  echo "checking teams"
  for ((i = 0; i < number_of_teams; i++))
@@ -71,8 +62,10 @@ if [ "$number_of_teams" -gt 0 ]; then
 fi
 }
 
+check_if_valid_ghe_team_member() {
+export GH_ENTERPRISE_TOKEN=$access_token
+export GH_HOST=$ghe_host
 
-check_if_valid_ghes_team_member() {
 if [ "$number_of_teams" -gt 0 ]; then
  echo "checking teams"
  for ((i = 0; i < number_of_teams; i++))
@@ -95,7 +88,6 @@ if [ "$number_of_teams" -gt 0 ]; then
  done
 fi
 }
-
 
 validate_response_status_code() {
  # Check the response status code
@@ -109,22 +101,15 @@ validate_response_status_code() {
  fi
 }
 
-
 check_if_valid_team_member() {
-if [ -n "$gh_token" ]; then
-  # gh_token provided - use github.com
-  echo "gh_token provided - using default github.com"
-  check_if_valid_ghec_team_member
-elif [ -z "$gh_token" ] && [ -n "$ghe_token" ] && [ -n "$ghe_host" ]; then
-  # ghe_token and ghe_host provided - use ghe_host
-  echo "ghe_token and ghe_host provided - using $ghe_host"
-  check_if_valid_ghes_team_member
+if [ -n "$ghe_host" ]; then
+  echo "ghe_host provided - using $ghe_host"
+  check_if_valid_ghe_team_member
 else
-  echo "invalid configuration - please provide gh_token or both ghe_token and ghe_host"
-  exit 1
+  echo "ghe_host not provided - using github.com"
+  check_if_valid_gh_team_member
 fi
 }
-
 
 check_is_valid() {
  if [ "$is_valid" -ne 0 ]; then
@@ -140,10 +125,7 @@ check_is_valid() {
  fi
 }
 
-
-
-
-echo "validating if user [$BUILD_CREATED_BY] is authorized to trigger job" >&2
+echo "validating if user [$BUILD_CREATED_BY] is authorized to trigger job [$BUILD_JOB_NAME]" >&2
 
 
 check_if_valid_user
