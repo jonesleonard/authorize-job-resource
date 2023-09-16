@@ -44,6 +44,16 @@ resources:
       teams:
         - my-team
       access_token: ((github-access-token))
+  - name: authorize-job-ghec-suffix
+    type: authorize-job
+    source:
+      suffix: _mycompany
+      organization: my-org
+      users:
+        - my-user
+      teams:
+        - my-team
+      access_token: ((github-access-token))
 ```
 
 ## Behavior
@@ -71,6 +81,22 @@ jobs:
 
 ## Implementation Details
 
-The resource authorizes users and/or teams to run a job within a GitHub organization. It relies on
-the [`$BUILD_CREATED_BY`](https://concourse-ci.org/implementing-resource-types.html#resource-metadata) metadata
-environment variable that concourse uses to expose the username of the user that triggered the build.
+Below are implementation details that impact the behavior of this resource.
+
+### `$BUILD_CREATED_BY`
+
+The resource relies on
+the [`$BUILD_CREATED_BY`](https://concourse-ci.org/implementing-resource-types.html#resource-metadata)
+metadata exposed by Concourse to resources.
+
+This metadata environment variable exposes the username of the user that triggered the build. The resource uses this
+username to determine if the user is authorized to run the job. If the username provided to the resource does not match
+the username of the user that triggered the build, the resource will fail.
+
+Ensure that your Concourse instance provides user's GitHub username as the `$BUILD_CREATED_BY` metadata environment.
+
+### GitHub Enterprise Cloud Username
+
+This resource supports GitHub, GitHub Enterprise Server, and GitHub Enterprise Cloud. When using with GitHub Enterprise
+Cloud you may need to modify the username. For example, your company may append a suffix to the username to avoid
+conflicts. You can use the `suffix` parameter to modify the username.
