@@ -27,6 +27,7 @@ resource_types:
       tag: latest
 
 resources:
+  # NORMAL USAGE
   - name: authorize-job
     type: authorize-job
     expose_build_created_by: true
@@ -37,6 +38,7 @@ resources:
       teams:
         - my-team
       access_token: ((github-access-token))
+  # GITHUB ENTERPRISE USAGE
   - name: authorize-job-ghe
     type: authorize-job
     expose_build_created_by: true
@@ -48,6 +50,7 @@ resources:
       teams:
         - my-team
       access_token: ((github-access-token))
+    # GITHUB ENTERPRISE CLOUD USAGE WITH SUFFIX
   - name: authorize-job-ghec-suffix
     type: authorize-job
     expose_build_created_by: true
