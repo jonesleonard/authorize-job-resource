@@ -1,3 +1,5 @@
+![deploy](https://github.com/jonesleonard/authorize-job-resource/actions/workflows/deploy/badge.svg)
+
 # authorize-job-resource
 
 A [Concourse](https://concourse-ci.org/) resource to only allow specified GitHub users and/or teams to run a job within
