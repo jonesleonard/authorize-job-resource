@@ -27,7 +27,8 @@ jobs:
     - name: Docker meta
       id: meta
       uses: docker/metadata-action@v5
-      with:          
+      with:
+        images: leojones/authorization-resource
         # generate Docker tags based on the following events/attributes
         tags: |
           type=schedule
