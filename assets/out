@@ -111,7 +111,7 @@ else
 fi
 }
 
-check_is_valid() {
+validate() {
  if [ "$is_valid" -ne 0 ]; then
    echo "is_valid: $is_valid"
    echo "This user is authorized to trigger this job."
@@ -130,6 +130,6 @@ echo "validating if user [$BUILD_CREATED_BY] is authorized to trigger job [$BUIL
 
 check_if_valid_user
 check_if_valid_team_member
-check_is_valid
+validate
 
 

@@ -27,6 +27,7 @@ resource_types:
 resources:
   - name: authorize-job
     type: authorize-job
+    expose_build_created_by: true
     source:
       organization: my-org
       users:
@@ -36,6 +37,7 @@ resources:
       access_token: ((github-access-token))
   - name: authorize-job-ghe
     type: authorize-job
+    expose_build_created_by: true
     source:
       ghe_host: github.mycompany.com
       organization: my-org
@@ -46,6 +48,7 @@ resources:
       access_token: ((github-access-token))
   - name: authorize-job-ghec-suffix
     type: authorize-job
+    expose_build_created_by: true
     source:
       suffix: _mycompany
       organization: my-org
@@ -55,6 +58,9 @@ resources:
         - my-team
       access_token: ((github-access-token))
 ```
+
+Note that `expose_build_created_by: true` is required for this resource to function properly. It exposes the
+`$BUILD_CREATED_BY` metadata environment variable to the resource.
 
 ## Behavior
 
@@ -99,4 +105,5 @@ Ensure that your Concourse instance provides user's GitHub username as the `$BUI
 
 This resource supports GitHub, GitHub Enterprise Server, and GitHub Enterprise Cloud. When using with GitHub Enterprise
 Cloud you may need to modify the username. For example, your company may append a suffix to the username to avoid
-conflicts. You can use the `suffix` parameter to modify the username.
+conflicts. If the `$BUILD_CREATED_BY` value does not include this suffix you can use the `suffix` parameter to modify
+the username.
