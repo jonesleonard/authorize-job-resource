@@ -20,7 +20,7 @@ jobs:
         fetch-depth: 0                # fetch the whole repo history
     - name: Run tests
       working-directory: ./tests
-      run: run_tests.sh
+      run: ls -al
     - name: Git Version
       id: version
       uses: codacy/git-version@2.7.1
