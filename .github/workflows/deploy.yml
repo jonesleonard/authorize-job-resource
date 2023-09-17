@@ -18,7 +18,7 @@ jobs:
     - name: install bash_unit
       run: bash <(curl -s https://raw.githubusercontent.com/pgrange/bash_unit/master/install.sh)
     - name: run tests
-      run: bash_unit tests/*
+      run: ./bash_unit tests/*
       
   build:
     needs: test
