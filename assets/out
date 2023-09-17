@@ -73,7 +73,7 @@ declare -F check_team_membership >/dev/null || check_team_membership() {
      response_headers=$(gh api \
          -H "Accept: application/vnd.github+json" \
          -H "X-GitHub-Api-Version: 2022-11-28" \
-         "/orgs/$org/teams/$teams/memberships/$BUILD_CREATED_BY$suffix" \
+         "/orgs/$org/teams/$teams/memberships/$username" \
          -i)
      set -e
   response_status_code=$(echo "$response_headers" | grep 'HTTP/' | awk '{print $2}')
@@ -107,9 +107,10 @@ if [ "$number_of_teams" -gt 0 ]; then
  for ((i = 0; i < number_of_teams; i++))
  do
     teams=$(jq -r '.source.teams['"$i"'] // ""' <<< "$payload")
-    log_debug "checking if [$BUILD_CREATED_BY] belongs to team [$teams]"
+    log_debug "checking if [$username] belongs to team [$teams]"
 
     result=$(check_team_membership)
+    log_debug "result [$result]"
 
     if [ "$result" -eq 0 ]; then
       log_debug "Found valid team: $teams"
@@ -134,6 +135,9 @@ validate() {
 
 main() {
   log_info "validating if user [$BUILD_CREATED_BY] is authorized to trigger job [$BUILD_JOB_NAME]" >&2
+  log_debug "BUILD_CREATED_BY: $BUILD_CREATED_BY" >&2
+  log_debug "suffix provided: $suffix" >&2
+  log_debug "username used for API request: $username" >&2
 
   check_if_debug_mode
   check_if_valid_user
@@ -166,6 +170,7 @@ else
     ghe_host=$(jq -r '.source.ghe_host // ""' <<< "$payload")
     org=$(jq -r '.source.org // ""' <<< "$payload")
     suffix=$(jq -r '.source.suffix // ""' <<< "$payload")
+    username="$BUILD_CREATED_BY$suffix"
     is_debug_mode=$(jq -r '.params.debug // ""' <<< "$payload")
     total_number_of_users=$(jq -r '.source.users // ""' <<< "$payload" | wc -l)
     number_of_users=$(echo $(expr $total_number_of_users - 2))
