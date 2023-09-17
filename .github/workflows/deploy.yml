@@ -7,8 +7,7 @@ on:
     branches: [ "main" ]
 
 jobs:
-
-  test:
+  test-check:
     runs-on: ubuntu-latest
     steps:
     - name: checkout code
@@ -16,12 +15,24 @@ jobs:
       with:
         ref: ${{ github.head_ref }}
         fetch-depth: 0
-    - name: run tests
+    - name: run check tests
       working-directory: ./tests
-      run: ./run_tests.sh
+      run: ./check.sh
+      
+  test-in:
+    runs-on: ubuntu-latest
+    steps:
+    - name: checkout code
+      uses: actions/checkout@v3
+      with:
+        ref: ${{ github.head_ref }}
+        fetch-depth: 0
+    - name: run in tests
+      working-directory: ./tests
+      run: ./in.sh
 
   build:
-    needs: test
+    needs: [test-check, test-in]
     runs-on: ubuntu-latest
     steps:
     - name: checkout code
