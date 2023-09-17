@@ -150,7 +150,7 @@ else
     exec 1>&2 # redirect all output to stderr for logging
 
     # Check if a command-line argument was provided
-    if [ $# -eq 1 ]; then
+    if [ $# -eq 1 ] && jq -e . <<< "$1" >/dev/null 2>&1; then
         # If a single argument was provided, use it as the payload
         echo "cli argument provided"
         payload="$1"
@@ -158,7 +158,7 @@ else
     else
         # If no argument was provided, read from stdin and store it in the payload
         echo "no cli argument provided - reading from stdin"
-        payload="$(cat)"
+        payload="$(cat <&0)"
         echo "payload: $payload"
     fi
 
