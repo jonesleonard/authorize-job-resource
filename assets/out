@@ -109,7 +109,8 @@ if [ "$number_of_teams" -gt 0 ]; then
     teams=$(jq -r '.source.teams['"$i"'] // ""' <<< "$payload")
     log_debug "checking if [$username] belongs to team [$teams]"
 
-    result=$(check_team_membership)
+    check_team_membership
+    result=$?
     log_debug "result [$result]"
 
     if [ "$result" -eq 0 ]; then
