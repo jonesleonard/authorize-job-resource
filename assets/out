@@ -11,6 +11,7 @@ ghe_host=$(jq -r '.source.ghe_host // ""' <<< "$payload")
 ghe_host=$(jq -r '.source.ghe_host // ""' <<< "$payload")
 org=$(jq -r '.source.org // ""' <<< "$payload")
 suffix=$(jq -r '.source.suffix // ""' <<< "$payload")
+is_debug_mode=$(jq -r '.params.debug // ""' <<< "$payload")
 total_number_of_users=$(jq -r '.source.users // ""' <<< "$payload" | wc -l)
 number_of_users=$(echo $(expr $total_number_of_users - 2))
 total_number_of_teams=$(jq -r '.source.teams // ""' <<< "$payload" | wc -l)
@@ -18,18 +19,62 @@ number_of_teams=$(echo $(expr $total_number_of_teams - 2))
 
 is_valid=0
 
-# enable debug
-export GH_DEBUG=1
+
+
+check_if_debug_mode() {
+  if [ "$is_debug_mode" == "true" ]; then
+   echo "debug mode enabled" >&2
+   # enable debug
+   export GH_DEBUG=1
+   set -x
+ fi
+}
+
+# Define a function for logging with different log levels
+log_message() {
+  if [ "$DEBUG" = "true" ]; then
+    # Generate a timestamp
+    timestamp=$(date +"%Y-%m-%d %H:%M:%S")
+
+    # Get the script name
+    script_name=$(basename "$0")
+
+    # Get the process ID
+    pid=$$
+
+    # Get the log level from the first argument (e.g., "INFO" or "ERROR")
+    log_level="$1"
+    shift  # Remove the first argument, so only the message remains
+
+    # Combine various information into the log message
+    log_message="$timestamp - PID: $pid - Script: $script_name - $log_level: $*"
+
+    # Print the log message
+    echo "$log_message"
+  fi
+}
+
+log_info() {
+  log_message "INFO" "$@"
+}
+
+log_debug() {
+  log_message "DEBUG" "$@"
+}
+
+log_error() {
+  log_message "ERROR" "$@"
+}
 
 check_if_valid_user() {
  if [ "$number_of_users" -gt 0 ]; then
-   echo "checking [$number_of_users] users"
+   log_info "checking [$number_of_users] users"
    for ((i = 0; i < number_of_users; i++))
      do
        users=$(jq -r '.source.users['$i'] // ""' <<< "$payload")
-       echo "checking user: $users"
+       log_debug "checking user: $users"
        if [ "$users" == "$BUILD_CREATED_BY" ]; then
-         echo "found valid user: $users == $BUILD_CREATED_BY"
+         log_debug "found valid user: $users == $BUILD_CREATED_BY"
          is_valid=1
          break
        fi
@@ -42,12 +87,11 @@ check_if_valid_gh_team_member() {
 export GH_TOKEN=$access_token
 
 if [ "$number_of_teams" -gt 0 ]; then
- echo "checking teams"
+ log_info "checking teams"
  for ((i = 0; i < number_of_teams; i++))
  do
    teams=$(jq -r '.source.teams['$i'] // ""' <<< "$payload")
-   echo "checking if [$BUILD_CREATED_BY] belongs to team [$teams]"
-
+   log_debug "checking if [$BUILD_CREATED_BY] belongs to team [$teams]"
 
    set +e
    response_headers=$(gh api \
@@ -69,12 +113,11 @@ export GH_ENTERPRISE_TOKEN=$access_token
 export GH_HOST=$ghe_host
 
 if [ "$number_of_teams" -gt 0 ]; then
- echo "checking teams"
+ log_info "checking teams"
  for ((i = 0; i < number_of_teams; i++))
  do
    teams=$(jq -r '.source.teams['$i'] // ""' <<< "$payload")
-   echo "checking if [$BUILD_CREATED_BY] belongs to team [$teams]"
-
+   log_debug "checking if [$BUILD_CREATED_BY] belongs to team [$teams]"
 
    set +e
    response_headers=$(gh api \
@@ -94,40 +137,40 @@ fi
 validate_response_status_code() {
  # Check the response status code
  if [ "$1" -eq 200 ]; then
-     echo "Request was successful (HTTP status code 200)." >&2
+     log_debug "Request was successful (HTTP status code 200)." >&2
      is_valid=1
  elif [ "$1" -eq 404 ]; then
-     echo "Resource not found (HTTP status code 404)." >&2
+     log_debug "Resource not found (HTTP status code 404)." >&2
  else
-     echo "Request failed with HTTP status code: $response_status_code." >&2
+     log_debug "Request failed with HTTP status code: $response_status_code." >&2
  fi
 }
 
 check_if_valid_team_member() {
 if [ -n "$ghe_host" ]; then
-  echo "ghe_host provided - using $ghe_host"
+  log_debug "ghe_host provided - using $ghe_host"
   check_if_valid_ghe_team_member
 else
-  echo "ghe_host not provided - using github.com"
+  log_debug "ghe_host not provided - using github.com"
   check_if_valid_gh_team_member
 fi
 }
 
 validate() {
  if [ "$is_valid" -ne 0 ]; then
-   echo "is_valid: $is_valid"
-   echo "This user is authorized to trigger this job."
+   log_debug "is_valid: $is_valid"
+   log_debug "This user is authorized to trigger this job."
    # output the result
    jq -n "{
     version: { version: \"v\" }
     }" >&3
  else
-   echo "This user is not authorized to trigger this job." >&2
+   log_error "This user is not authorized to trigger this job." >&2
    exit 1
  fi
 }
 
-echo "validating if user [$BUILD_CREATED_BY] is authorized to trigger job [$BUILD_JOB_NAME]" >&2
+log_info "validating if user [$BUILD_CREATED_BY] is authorized to trigger job [$BUILD_JOB_NAME]" >&2
 
 
 check_if_valid_user

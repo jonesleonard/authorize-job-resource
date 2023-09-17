@@ -82,6 +82,10 @@ job within a Concourse pipeline.
 
 Authorize the specified users and/or teams to run a job within a Concourse pipeline.
 
+#### Put Parameters
+
+* `debug`: *Optional.* Enable debug logging. Defaults to `false`.
+
 #### Put Example
 
 ```yaml
@@ -89,6 +93,8 @@ jobs:
   - name: my-job
     plan:
       - put: authorize-job
+        params:
+          debug: true
       - ... # the rest of the job plan
 ```
 
