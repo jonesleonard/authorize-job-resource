@@ -25,7 +25,7 @@ test_validates_gh_user() {
   payload='{"params":{},"source":{"access_token":"test-access-token","org":"test-org","users":["'$test_user'"]}}'
   result=$(BUILD_CREATED_BY=$test_user BUILD_JOB_NAME="test-build-job" $script_location "$payload")
   exit_code=$?
-  expected_result='[{ "version": "v" }]'
+  expected_result=$(jq -n "{version:{version:\"v\"}}")
   expected_exit_code=0
   echo "actual result: $result"
   assert_equals "$expected_exit_code" "$exit_code" "the out script should return a zero exit code"
@@ -50,7 +50,7 @@ test_validates_gh_user_when_multiple_users_teams() {
   payload='{"params":{},"source":{"access_token":"test-access-token","org":"test-org","users":["test-user","jdoe1","jdoe2"],"teams":["test-team-1","test-team-2"]}}'
   result=$(BUILD_CREATED_BY=$test_user BUILD_JOB_NAME="test-build-job" $script_location "$payload")
   exit_code=$?
-  expected_result='[{ "version": "v" }]'
+  expected_result=$(jq -n "{version:{version:\"v\"}}")
   expected_exit_code=0
   echo "actual result: $result"
   assert_equals "$expected_exit_code" "$exit_code" "the out script should return a zero exit code"
@@ -68,7 +68,7 @@ test_validates_gh_team() {
   payload='{"params":{},"source":{"access_token":"test-access-token","org":"test-org","users":[],"teams":["'$test_team'"]}}'
   result=$(BUILD_CREATED_BY=$test_user BUILD_JOB_NAME="test-build-job" $script_location "$payload")
   exit_code=$?
-  expected_result='[{ "version": "v" }]'
+  expected_result=$(jq -n "{version:{version:\"v\"}}")
   expected_exit_code=0
   echo "actual result: $result"
   assert_equals "$expected_exit_code" "$exit_code" "the out script should return a zero exit code"
@@ -97,7 +97,7 @@ test_validates_gh_team_multiple_users_teams() {
   payload='{"params":{},"source":{"access_token":"test-access-token","org":"test-org","users":["test-user","jdoe1","jdoe2"],"teams":["'$test_team'","test-team-2"]}}'
   result=$(BUILD_CREATED_BY=$test_user BUILD_JOB_NAME="test-build-job" $script_location "$payload")
   exit_code=$?
-  expected_result='[{ "version": "v" }]'
+  expected_result=$(jq -n "{version:{version:\"v\"}}")
   expected_exit_code=0
   echo "actual result: $result"
   assert_equals "$expected_exit_code" "$exit_code" "the out script should return a zero exit code"
@@ -115,7 +115,7 @@ test_validates_ghe_team() {
   payload='{"params":{},"source":{"access_token":"test-access-token","ghe_host":"test-ghe_host","org":"test-org","users":[],"teams":["'$test_team'"]}}'
   result=$(BUILD_CREATED_BY=$test_user BUILD_JOB_NAME="test-build-job" $script_location "$payload")
   exit_code=$?
-  expected_result='[{ "version": "v" }]'
+  expected_result=$(jq -n "{version:{version:\"v\"}}")
   expected_exit_code=0
   echo "actual result: $result"
   assert_equals "$expected_exit_code" "$exit_code" "the out script should return a zero exit code"

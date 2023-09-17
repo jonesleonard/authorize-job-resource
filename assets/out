@@ -126,7 +126,7 @@ validate() {
    log_debug "is_valid: $global_is_valid"
    log_debug "This user is authorized to trigger this job."
    # output the result
-   echo '[{ "version": "v" }]' >&3
+   jq -n "{version:{version:\"v\"}}" >&3
  else
    log_error "This user is not authorized to trigger this job."
    exit 1
