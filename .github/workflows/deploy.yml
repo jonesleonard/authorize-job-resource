@@ -20,7 +20,7 @@ jobs:
     - name: run tests
       run: ./bash_unit tests/*
       
-  build:
+  build-release:
     needs: test
     runs-on: ubuntu-latest
     steps:
@@ -59,4 +59,10 @@ jobs:
       with:
         tag: ${{ steps.version.outputs.version }}
         message: "Releasing version ${{ steps.version.outputs.version }}"
+    - name: create release
+      uses: elgohr/Github-Release-Action@v4
+      env:
+        GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+      with:
+        title: ${{ steps.version.outputs.version }}
         
