@@ -154,10 +154,12 @@ else
         # If a single argument was provided, use it as the payload
         echo "cli argument provided"
         payload="$1"
+        echo "payload: $payload"
     else
         # If no argument was provided, read from stdin and store it in the payload
         echo "no cli argument provided - reading from stdin"
         payload="$(cat)"
+        echo "payload: $payload"
     fi
 
     access_token=$(jq -r '.source.access_token // ""' <<< "$payload")
