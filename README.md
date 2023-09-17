@@ -22,7 +22,7 @@ in [karthikraina32/concourse-trigger-guard](https://github.com/karthikraina32/co
 
 ```yaml
 resource_types:
-  - name: authorize-job
+  - name: authorize-job-resource
     type: docker-image
     source:
       repository: leojones/authorize-job-resource
@@ -34,7 +34,7 @@ resources:
     type: authorize-job
     expose_build_created_by: true
     source:
-      organization: my-org
+      org: my-org
       users:
         - my-user
       teams:
@@ -46,7 +46,7 @@ resources:
     expose_build_created_by: true
     source:
       ghe_host: github.mycompany.com
-      organization: my-org
+      org: my-org
       users:
         - my-user
       teams:
@@ -58,7 +58,7 @@ resources:
     expose_build_created_by: true
     source:
       suffix: _mycompany
-      organization: my-org
+      org: my-org
       users:
         - my-user
       teams:
