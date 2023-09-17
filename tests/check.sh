@@ -6,6 +6,6 @@ set -e -u
 script_location="$(../assets/check)"
 
 test_output() {
-  expected='[{ "version": "" }]'
+  expected=$(jq -n "{version:{version:\"\"}}")
   assert_equals "$expected" "$script_location" "the check script should return a valid output"
 }

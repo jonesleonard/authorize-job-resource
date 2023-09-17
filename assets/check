@@ -2,4 +2,6 @@
 
 set -e -u
 
-echo '[{ "version": "" }]'
+exec 3>&1 # make stdout available as fd 3 for the result
+
+jq -n "{version:{version:\"\"}}" >&3
