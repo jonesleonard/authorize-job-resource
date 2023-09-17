@@ -2,8 +2,4 @@
 
 set -e -u
 
-cat <<EOF
-{
-  "version":  { "version": "v" }
-}
-EOF
+echo '[{ "version": "v" }]'
