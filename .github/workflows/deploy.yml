@@ -53,4 +53,11 @@ jobs:
         tags:  |
           ${{ secrets.DOCKERHUB_USERNAME }}/authorize-job-resource:${{ steps.version.outputs.version }}
           ${{ secrets.DOCKERHUB_USERNAME }}/authorize-job-resource:latest
-          
+          - name: Tag Release
+    - name: tag release
+      # https://github.com/marketplace/actions/create-update-tag
+      uses: rickstaa/action-create-tag@v1
+      with:
+        tag: ${{ steps.version.outputs.version }}
+        message: "Releasing version ${{ steps.version.outputs.version }}"
+        
