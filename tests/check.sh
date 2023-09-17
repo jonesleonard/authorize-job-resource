@@ -13,8 +13,10 @@ it_has_valid_output() {
   echo "actual result: $result"
   expected='[{ "version": "" }]'
   if [ "$result" != "$expected" ]; then
-      echo "Assertion failed: Result is not as expected"
+      echo "FAILED it_has_valid_output: Result is not as expected"
       exit 1
+  else
+      echo "PASSED it_has_valid_output"
   fi
 }
 
