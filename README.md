@@ -97,6 +97,14 @@ jobs:
           debug: true
       - ... # the rest of the job plan
 ```
+## Testing
+
+Run tests by running `./tests/run_tests`. You can also run tests individually by running `./tests/<test_name>`.
+
+### Testing Resources
+
+- [how to mock in bash tests](https://advancedweb.hu/how-to-mock-in-bash-tests/)
+- [example bash tests in the git resource](https://github.com/concourse/git-resource/tree/master/test)
 
 ## Implementation Details
 
