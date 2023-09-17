@@ -73,7 +73,7 @@ declare -F check_team_membership >/dev/null || check_team_membership() {
      response_headers=$(gh api \
          -H "Accept: application/vnd.github+json" \
          -H "X-GitHub-Api-Version: 2022-11-28" \
-         /orgs/"$org"/teams/"$teams"/memberships/"$BUILD_CREATED_BY""$suffix" \
+         "/orgs/$org/teams/$teams/memberships/$BUILD_CREATED_BY$suffix" \
          -i)
      set -e
   response_status_code=$(echo "$response_headers" | grep 'HTTP/' | awk '{print $2}')
@@ -106,7 +106,7 @@ if [ "$number_of_teams" -gt 0 ]; then
  log_info "checking teams"
  for ((i = 0; i < number_of_teams; i++))
  do
-    teams=$(jq -r '.source.teams['$i'] // ""' <<< "$payload")
+    teams=$(jq -r '.source.teams['"$i"'] // ""' <<< "$payload")
     log_debug "checking if [$BUILD_CREATED_BY] belongs to team [$teams]"
 
     result=$(check_team_membership)
