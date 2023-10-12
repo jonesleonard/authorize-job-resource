@@ -19,7 +19,7 @@ jobs:
       run: bash <(curl -s https://raw.githubusercontent.com/pgrange/bash_unit/master/install.sh)
     - name: run tests
       run: ./bash_unit tests/*
-      
+
   build-release:
     needs: test
     runs-on: ubuntu-latest
@@ -67,4 +67,3 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
       with:
         title: ${{ steps.version.outputs.version }}
-        
