@@ -189,7 +189,7 @@ if [ "$number_of_teams" -gt 0 ]; then
 
     if [ "$result" -eq 0 ]; then
       log_debug "Found valid team: $teams"
-      global_is_valid=1  # Early return if a match is found
+      global_is_valid_team=1  # Early return if a match is found
       return 0
     fi
  done
@@ -197,6 +197,12 @@ fi
 }
 
 validate() {
+  if [ "$global_is_valid_user" -eq 1 ] || [ "$global_is_valid_team" -eq 1 ]; then
+    log_debug "user is authorized via user membership [${global_is_valid_user} or team membership ${global_is_valid_team}"
+    global_is_valid=1
+  fi
+
+ # user is unauthorized if global_is_valid is 0
  if [ "$global_is_valid" -ne 0 ]; then
    log_debug "is_valid: $global_is_valid"
    log_debug "This user is authorized to trigger this job."
@@ -253,6 +259,8 @@ else
     number_of_teams=$(echo $(expr $total_number_of_teams - 2))
 
     global_is_valid=0
+    global_is_valid_user=0
+    global_is_valid_team=0
 
     main
 fi
