@@ -59,7 +59,7 @@ log_error() {
 # Returns 204 if BOTH requester and user is a member
 # Returns 302 if requester is not an org members
 # Returns 404 if requester and user is not a member
-declare -F check_org_membership > /dev/null || check_org_membership() {
+declare -F check_org_membership >/dev/null || check_org_membership() {
   set +e
     response=$(gh api \
                 -H "Accept: application/vnd.github+json" \
@@ -78,6 +78,9 @@ declare -F check_org_membership > /dev/null || check_org_membership() {
   elif [ "$response_status_code" -eq 404 ]; then
       log_debug "User is not a member of  $org"
       echo 1
+  else
+      log_error "Request failed with HTTP status code: $response_status_code."
+      echo 1
   fi
 }
 check_if_valid_org_user() {
@@ -91,7 +94,7 @@ check_if_valid_org_user() {
   fi
 
   log_info "Checking if $username belongs to $org"
-  result = $(check_org_membership)
+  result=$(check_org_membership)
   log_debug "result [$result]"
 
   if [ "$result" -eq 0 ]; then
@@ -121,13 +124,12 @@ check_if_valid_user() {
       if [ "$user" == "$BUILD_CREATED_BY" ]; then
         log_debug "Found valid user: $user == $BUILD_CREATED_BY"
         log_info "Checking if $username belongs to $org"
-        result = $(check_org_membership)
+        result=$(check_if_valid_org_user)
         log_debug "result [$result]"
         if [ "$result" -eq 0 ]; then
           global_is_valid_user=1  # Early return if a match is found
           return 0
         fi
-        return 0
       fi
     done
   fi

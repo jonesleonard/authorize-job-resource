@@ -174,7 +174,7 @@ test_validates_gh_org() {
   set_check_org_membership_response_status_code 0
   test_user='test-user'
   test_org='test_org'
-  payload='{"params":{},"source":{"access_token":"test-access-token","org":"'$test_org'","users":[],"teams":["test_team"]}}'
+  payload='{"params":{},"source":{"access_token":"test-access-token","org":"'$test_org'","users":["'$test_user'"],"teams":[]}}'
   result=$(BUILD_CREATED_BY=$test_user BUILD_JOB_NAME="test-build-job" $script_location "$payload")
   exit_code=$?
   expected_result=$(jq -n "{version:{version:\"v\"}}")
@@ -188,7 +188,7 @@ test_invalidates_gh_org() {
   set_check_org_membership_response_status_code 1
   test_user='test-user'
   test_org='test_org'
-  payload='{"params":{},"source":{"access_token":"test-access-token","org":"'$test_org'","users":[],"teams":["test_team"]}}'
+  payload='{"params":{},"source":{"access_token":"test-access-token","org":"'$test_org'","users":["'$test_user'"],"teams":[]}}'
   result=$(BUILD_CREATED_BY=$test_user BUILD_JOB_NAME="test-build-job" $script_location "$payload")
   exit_code=$?
   expected_result=''
@@ -206,7 +206,7 @@ test_validates_ghe_org() {
   set_check_org_membership_response_status_code 0
   test_user='test-user'
   test_org='test_org'
-  payload='{"params":{},"source":{"access_token":"test-access-token","ghe_host":"test-ghe_host","org":"'$test_org'","users":[],"teams":["test_team"]}}'
+  payload='{"params":{},"source":{"access_token":"test-access-token","ghe_host":"test-ghe_host","org":"'$test_org'","users":["'$test_user'"],"teams":[]}}'
   result=$(BUILD_CREATED_BY=$test_user BUILD_JOB_NAME="test-build-job" $script_location "$payload")
   exit_code=$?
   expected_result=$(jq -n "{version:{version:\"v\"}}")
@@ -220,7 +220,7 @@ test_invalidates_ghe_org() {
   set_check_org_membership_response_status_code 1
   test_user='test-user'
   test_org='test_org'
-  payload='{"params":{},"source":{"access_token":"test-access-token","ghe_host":"test-ghe_host","org":"'$test_org'","users":[],"teams":["test_team"]}}'
+  payload='{"params":{},"source":{"access_token":"test-access-token","ghe_host":"test-ghe_host","org":"'$test_org'","users":["'$test_user'"],"teams":[]}}'
   result=$(BUILD_CREATED_BY=$test_user BUILD_JOB_NAME="test-build-job" $script_location "$payload")
   exit_code=$?
   expected_result=''
