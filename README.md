@@ -97,10 +97,17 @@ jobs:
           debug: true
       - ... # the rest of the job plan
 ```
+
 ## Testing
 
-Run tests by running `./tests/run_tests`. You can also run tests individually by running `./tests/<test_name>`.
+The project uses [`bash_unit`](https://github.com/pgrange/bash_unit) to run tests.
 
+### Running Tests
+
+- a single test: `bash_unit tests/out.sh`
+- all tests: `bash_unit tests/*`
+- a specific test: `bash_unit -p test_validates_gh_user tests/out.sh`
+  bash_unit -p test_is_debug_true tests/out.sh
 ### Testing Resources
 
 - [how to mock in bash tests](https://advancedweb.hu/how-to-mock-in-bash-tests/)

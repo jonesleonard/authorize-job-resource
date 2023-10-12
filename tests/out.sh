@@ -15,6 +15,27 @@ set_check_team_membership_response_status_code() {
     $response_status_code
 EOF
 }
+# ====================================================
+# GitHub Check DEBUG Tests
+# ====================================================
+
+test_is_debug_true() {
+  test_user='test-user'
+  payload='{"params":{"debug": "true"},"source":{"access_token":"test-access-token","org":"test-org","users":["'$test_user'"]}}'
+  result=$(BUILD_CREATED_BY=$test_user BUILD_JOB_NAME="test-build-job" $script_location "$payload")
+  GH_DEBUG=$(cat /tmp/debug_value.txt)
+  assert_equals 1 "$GH_DEBUG"
+  rm /tmp/debug_value.txt  # cleanup
+}
+
+test_is_debug_false() {
+  test_user='test-user'
+  payload='{"params":{"debug": "false"},"source":{"access_token":"test-access-token","org":"test-org","users":["'$test_user'"]}}'
+  result=$(BUILD_CREATED_BY=$test_user BUILD_JOB_NAME="test-build-job" $script_location "$payload")
+  GH_DEBUG=$(cat /tmp/debug_value.txt)
+  assert_equals 0 "$GH_DEBUG"
+  rm /tmp/debug_value.txt  # cleanup
+}
 
 # ====================================================
 # GitHub User Validation Tests
