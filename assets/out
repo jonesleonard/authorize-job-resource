@@ -88,8 +88,10 @@ declare -F check_team_membership >/dev/null || check_team_membership() {
 
   log_debug "response_status_code: $response_status_code"
   expected_state="active"
+
   # Check the response status code
-  if [ "$response_status_code" -eq 200 ] && [ ${"$response_state",,} -eq ${expected_state,,} ]; then
+  # echo "$response_state" | tr '[:upper:]' '[:lower:] will translate all the upper case characters (if there are any) to lower case
+  if [[ "$response_status_code" -eq 200 && "$(echo "$response_state" | tr '[:upper:]' '[:lower:]')" == "$(echo "$expected_state" | tr '[:upper:]' '[:lower:]')"  ]]; then
      log_debug "Request was successful (HTTP status code 200)."
      echo 0
   elif [ "$response_status_code" -eq 404 ]; then
