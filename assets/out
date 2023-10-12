@@ -76,16 +76,28 @@ check_if_valid_user() {
 #
 declare -F check_team_membership >/dev/null || check_team_membership() {
   set +e
-     response_headers=$(gh api \
-         -H "Accept: application/vnd.github+json" \
-         -H "X-GitHub-Api-Version: 2022-11-28" \
-         "/orgs/$org/teams/$teams/memberships/$username" \
-         -i)
-     set -e
-  response_status_code=$(echo "$response_headers" | grep 'HTTP/' | awk '{print $2}')
+     gh_response_with_headers=$(gh api \
+              -H "Accept: application/vnd.github+json" \
+              -H "X-GitHub-Api-Version: 2022-11-28" \
+              "/orgs/$org/teams/$teams/memberships/$username" \
+              -i)
+  set -e
+
+  response_status_code=$(echo "$gh_response_with_headers" | grep 'HTTP/' | awk '{print $2}')
+  response_state_json=$(echo "$gh_response_with_headers" | grep '.state')
+
+  # extract the state value from the json using jq
+  response_state=$(jq -r '.state' <<< "$response_state_json")
+
+  log_debug "response_state_json: $response_state_json"
+  log_debug "response_state: $response_state"
+
   log_debug "response_status_code: $response_status_code"
+  expected_state="active"
+
   # Check the response status code
-  if [ "$response_status_code" -eq 200 ]; then
+  # echo "$response_state" | tr '[:upper:]' '[:lower:] will translate all the upper case characters (if there are any) to lower case
+  if [[ "$response_status_code" -eq 200 && "$(echo "$response_state" | tr '[:upper:]' '[:lower:]')" == "$(echo "$expected_state" | tr '[:upper:]' '[:lower:]')"  ]]; then
      log_debug "Request was successful (HTTP status code 200)."
      echo 0
   elif [ "$response_status_code" -eq 404 ]; then
