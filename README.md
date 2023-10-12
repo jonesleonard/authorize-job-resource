@@ -104,9 +104,10 @@ The project uses [`bash_unit`](https://github.com/pgrange/bash_unit) to run test
 
 ### Running Tests
 
-- a single test: `bash_unit tests/in.sh`
+- a single test: `bash_unit tests/out.sh`
 - all tests: `bash_unit tests/*`
-
+- a specific test: `bash_unit -p test_validates_gh_user tests/out.sh`
+  bash_unit -p test_is_debug_true tests/out.sh
 ### Testing Resources
 
 - [how to mock in bash tests](https://advancedweb.hu/how-to-mock-in-bash-tests/)
