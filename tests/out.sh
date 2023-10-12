@@ -28,7 +28,7 @@ test_is_debug_true() {
   rm /tmp/debug_value.txt  # cleanup
 }
 
-test_is_debug_true() {
+test_is_debug_false() {
   test_user='test-user'
   payload='{"params":{"debug": "false"},"source":{"access_token":"test-access-token","org":"test-org","users":["'$test_user'"]}}'
   result=$(BUILD_CREATED_BY=$test_user BUILD_JOB_NAME="test-build-job" $script_location "$payload")
