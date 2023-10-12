@@ -5,7 +5,6 @@ set -e -u
 export GH_DEBUG=0
 
 check_if_debug_mode() {
-  echo "is_debug_mode: $is_debug_mode"
   if [ "$is_debug_mode" == "true" ]; then
    echo "debug mode enabled" >&2
    # enable debug
