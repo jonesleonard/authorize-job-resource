@@ -63,13 +63,13 @@ declare -F check_org_membership > /dev/null || check_org_membership() {
     set -e
   http_status=$(echo "$response" | grep -oP 'HTTP/[\d.]+\s+\K\d+')
   log_debug "response_status_code: $http_status"
-  if [[ $http_status -eq 204]]; then
+  if [[ "$http_status" -eq 204]]; then
       log_debug "Both Requestor and User are members of $org"
       echo 0
-  elif [[ $http_status -eq 302]]; then
+  elif [[" $http_status" -eq 302]]; then
       log_debug "Requestor is not a member of $org"
       echo 1
-  elif [[ $http_status -eq 404]]; then
+  elif [[ "$http_status" -eq 404]]; then
       log_debug "User is not a member of  $org"
       echo 2
   fi
