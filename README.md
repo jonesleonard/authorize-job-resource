@@ -97,9 +97,15 @@ jobs:
           debug: true
       - ... # the rest of the job plan
 ```
+
 ## Testing
 
-Run tests by running `./tests/run_tests`. You can also run tests individually by running `./tests/<test_name>`.
+The project uses [`bash_unit`](https://github.com/pgrange/bash_unit) to run tests.
+
+### Running Tests
+
+- a single test: `bash_unit tests/in.sh`
+- all tests: `bash_unit tests/*`
 
 ### Testing Resources
 
