@@ -20,6 +20,9 @@ in [karthikraina32/concourse-trigger-guard](https://github.com/karthikraina32/co
 
 ### Source Example
 
+Note that `expose_build_created_by: true` is required for this resource to function properly. It exposes the
+`$BUILD_CREATED_BY` metadata environment variable to the resource.
+
 ```yaml
 resource_types:
   - name: authorize-job-resource
@@ -66,8 +69,6 @@ resources:
       access_token: ((github-access-token))
 ```
 
-Note that `expose_build_created_by: true` is required for this resource to function properly. It exposes the
-`$BUILD_CREATED_BY` metadata environment variable to the resource.
 
 ## Behavior
 
@@ -107,11 +108,27 @@ The project uses [`bash_unit`](https://github.com/pgrange/bash_unit) to run test
 - a single test: `bash_unit tests/out.sh`
 - all tests: `bash_unit tests/*`
 - a specific test: `bash_unit -p test_validates_gh_user tests/out.sh`
-  bash_unit -p test_is_debug_true tests/out.sh
+
 ### Testing Resources
 
 - [how to mock in bash tests](https://advancedweb.hu/how-to-mock-in-bash-tests/)
 - [example bash tests in the git resource](https://github.com/concourse/git-resource/tree/master/test)
+
+### Running Locally
+
+You can run the scripts locally by passing a valid expected Concourse payload.
+
+For example, the following script will run the `out.sh` script and pass in a payload to validate team membership.
+
+```bash
+script_location="./../assets/out"
+test_user='<test_user>'
+payload='{"params":{"debug": "true"},"source":{"access_token":"<access_token>","org":"<org>","users":[],"teams":["<team>"]}}'
+result=$(BUILD_CREATED_BY=$test_user BUILD_JOB_NAME="test-build-job" $script_location "$payload")
+exit_code=$?
+echo "actual result: $result"
+echo "exit code: $exit_code"
+```
 
 ## Implementation Details
 
