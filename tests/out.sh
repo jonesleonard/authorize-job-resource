@@ -179,7 +179,7 @@ test_invalidates_gh_org() {
 # GitHub Enerprise Org validation tests
 # ====================================================
 
-test_validates_gh_org() {
+test_validates_ghe_org() {
   set_check_org_membership_response_status_code 0
   test_user='test-user'
   test_org='test_org'
@@ -193,7 +193,7 @@ test_validates_gh_org() {
   assert_equals "$expected_result" "$result" "the out script should return a valid output"
 }
 
-test_invalidates_gh_org() {
+test_invalidates_ghe_org() {
   set_check_org_membership_response_status_code 1
   test_user='test-user'
   test_org='test_org'
