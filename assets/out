@@ -61,7 +61,7 @@ declare -F check_org_membership > /dev/null || check_org_membership() {
                 "/orgs/$org/members/$username" \
                 -i)
     set -e
-  http_status=$(echo "$response" | grep -oP 'HTTP/[\d.]+\s+\K\d+')
+  http_status=$(echo "$response_headers" | grep 'HTTP/' | awk '{print $2}')
   log_debug "response_status_code: $http_status"
   if [ "$http_status" -eq 204 ]; then
       log_debug "Both Requestor and User are members of $org"
