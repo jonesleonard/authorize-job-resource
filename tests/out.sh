@@ -20,6 +20,7 @@ set_check_org_membership_response_status_code() {
   local response_status_code="$1"
   fake check_org_membership << EOF
     $response_status_code
+EOF
 }
 
 # ====================================================
