@@ -119,6 +119,7 @@ check_if_valid_user() {
         log_debug "result [$result]"
         if [ "$result" -eq 0 ]; then
           global_is_valid=1  # Early return if a match is found
+          return 0
         fi
         return 0
       fi
