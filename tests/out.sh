@@ -178,7 +178,7 @@ test_validates_gh_org() {
   result=$(BUILD_CREATED_BY=$test_user BUILD_JOB_NAME="test-build-job" $script_location "$payload")
   exit_code=$?
   expected_result=$(jq -n "{version:{version:\"v\"}}")
-  expected_exit_code=1
+  expected_exit_code=0
   echo "actual result: $result"
   assert_equals "$expected_exit_code" "$exit_code" "the out script should return a zero exit code"
   assert_equals "$expected_result" "$result" "the out script should return a valid output"
@@ -210,7 +210,7 @@ test_validates_ghe_org() {
   result=$(BUILD_CREATED_BY=$test_user BUILD_JOB_NAME="test-build-job" $script_location "$payload")
   exit_code=$?
   expected_result=$(jq -n "{version:{version:\"v\"}}")
-  expected_exit_code=1
+  expected_exit_code=0
   echo "actual result: $result"
   assert_equals "$expected_exit_code" "$exit_code" "the out script should return a zero exit code"
   assert_equals "$expected_result" "$result" "the out script should return a valid output"
