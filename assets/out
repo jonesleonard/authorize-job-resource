@@ -67,15 +67,15 @@ declare -F check_org_membership > /dev/null || check_org_membership() {
                 "/orgs/$org/members/$username" \
                 -i)
     set -e
-  http_status=$(echo "$response_headers" | grep 'HTTP/' | awk '{print $2}')
-  log_debug "response_status_code: $http_status"
-  if [ "$http_status" -eq 204 ]; then
+  response_status_code=$(echo "$response_headers" | grep 'HTTP/' | awk '{print $2}')
+  log_debug "response_status_code: $response_status_code"
+  if [ "$response_status_code" -eq 204 ]; then
       log_debug "Both Requestor and User are members of $org"
       echo 0
-  elif [ "$http_status" -eq 302 ]; then
+  elif [ "$response_status_code" -eq 302 ]; then
       log_debug "Requestor is not a member of $org"
       echo 1
-  elif [ "$http_status" -eq 404 ]; then
+  elif [ "$response_status_code" -eq 404 ]; then
       log_debug "User is not a member of  $org"
       echo 2
   fi
@@ -124,7 +124,7 @@ check_if_valid_user() {
         result = $(check_org_membership)
         log_debug "result [$result]"
         if [ "$result" -eq 0 ]; then
-          global_is_valid=1  # Early return if a match is found
+          global_is_valid_user=1  # Early return if a match is found
           return 0
         fi
         return 0
