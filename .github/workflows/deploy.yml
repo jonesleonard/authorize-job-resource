@@ -23,6 +23,8 @@ jobs:
   build-release:
     needs: test
     runs-on: ubuntu-latest
+    # should only run on push events
+    if: github.event_name == 'push'
     steps:
     - name: checkout code
       uses: actions/checkout@v3
