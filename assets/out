@@ -135,8 +135,6 @@ check_if_valid_user() {
   fi
 }
 
-
-
 # Function: check_team_membership
 #
 # Description: Checks if the user is a member of the specified team by calling the GitHub API. The function uses
