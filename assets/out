@@ -38,7 +38,10 @@ log_info() {
 }
 
 log_debug() {
-  log_message "DEBUG" "$@"
+  # check if GH_DEBUG is 1 and if so print the message otherwise ignore
+    if [ "$GH_DEBUG" == "1" ]; then
+      log_message "DEBUG" "$@"
+    fi
 }
 
 log_error() {
