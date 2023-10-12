@@ -696,3 +696,4 @@ FodyWeavers.xsd
 # End of https://www.toptal.com/developers/gitignore/api/windows,macos,intellij+all,jetbrains+iml,eclipse,visualstudio,visualstudiocode,linux
 
 .idea/
+assets/test-payload.sh
