@@ -2,6 +2,8 @@
 
 set -e -u
 
+export GH_DEBUG=0
+
 check_if_debug_mode() {
   if [ "$is_debug_mode" == "true" ]; then
    echo "debug mode enabled" >&2
@@ -9,6 +11,7 @@ check_if_debug_mode() {
    export GH_DEBUG=1
    set -x
  fi
+ echo $GH_DEBUG > /tmp/debug_value.txt
 }
 
 # Define a function for logging with different log levels
@@ -38,7 +41,10 @@ log_info() {
 }
 
 log_debug() {
-  log_message "DEBUG" "$@"
+  # check if GH_DEBUG is 1 and if so print the message otherwise ignore
+    if [ "$GH_DEBUG" == "1" ]; then
+      log_message "DEBUG" "$@"
+    fi
 }
 
 log_error() {
