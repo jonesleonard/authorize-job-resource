@@ -135,3 +135,67 @@ test_invalidates_ghe_team() {
   assert_equals "$expected_exit_code" "$exit_code" "the out script should return a zero exit code"
   assert_equals "$expected_result" "$result" "the out script should return a valid output"
 }
+
+# ====================================================
+# GitHub Org validation tests
+# ====================================================
+
+test_validates_gh_org() {
+  set_check_org_membership_response_status_code 0
+  test_user='test-user'
+  test_org='test_org'
+  payload='{"params":{},"source":{"access_token":"test-access-token","org":"'$test_org'","users":[],"teams":["test_team"]}}'
+  result=$(BUILD_CREATED_BY=$test_user BUILD_JOB_NAME="test-build-job" $script_location "$payload")
+  exit_code=$?
+  expected_result=$(jq -n "{version:{version:\"v\"}}")
+  expected_exit_code=1
+  echo "actual result: $result"
+  assert_equals "$expected_exit_code" "$exit_code" "the out script should return a zero exit code"
+  assert_equals "$expected_result" "$result" "the out script should return a valid output"
+}
+
+test_invalidates_gh_org() {
+  set_check_org_membership_response_status_code 1
+  test_user='test-user'
+  test_org='test_org'
+  payload='{"params":{},"source":{"access_token":"test-access-token","org":"'$test_org'","users":[],"teams":["test_team"]}}'
+  result=$(BUILD_CREATED_BY=$test_user BUILD_JOB_NAME="test-build-job" $script_location "$payload")
+  exit_code=$?
+  expected_result=''
+  expected_exit_code=1
+  echo "actual result: $result"
+  assert_equals "$expected_exit_code" "$exit_code" "the out script should return a zero exit code"
+  assert_equals "$expected_result" "$result" "the out script should return a valid output"
+}
+
+# ====================================================
+# GitHub Enerprise Org validation tests
+# ====================================================
+
+test_validates_gh_org() {
+  set_check_org_membership_response_status_code 0
+  test_user='test-user'
+  test_org='test_org'
+  payload='{"params":{},"source":{"access_token":"test-access-token","ghe_host":"test-ghe_host","org":"'$test_org'","users":[],"teams":["test_team"]}}'
+  result=$(BUILD_CREATED_BY=$test_user BUILD_JOB_NAME="test-build-job" $script_location "$payload")
+  exit_code=$?
+  expected_result=$(jq -n "{version:{version:\"v\"}}")
+  expected_exit_code=1
+  echo "actual result: $result"
+  assert_equals "$expected_exit_code" "$exit_code" "the out script should return a zero exit code"
+  assert_equals "$expected_result" "$result" "the out script should return a valid output"
+}
+
+test_invalidates_gh_org() {
+  set_check_org_membership_response_status_code 1
+  test_user='test-user'
+  test_org='test_org'
+  payload='{"params":{},"source":{"access_token":"test-access-token","ghe_host":"test-ghe_host","org":"'$test_org'","users":[],"teams":["test_team"]}}'
+  result=$(BUILD_CREATED_BY=$test_user BUILD_JOB_NAME="test-build-job" $script_location "$payload")
+  exit_code=$?
+  expected_result=''
+  expected_exit_code=1
+  echo "actual result: $result"
+  assert_equals "$expected_exit_code" "$exit_code" "the out script should return a zero exit code"
+  assert_equals "$expected_result" "$result" "the out script should return a valid output"
+}

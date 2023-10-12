@@ -45,7 +45,68 @@ log_error() {
   log_message "ERROR" "$@"
 }
 
+# Function: check_org_membership
+#
+# Description: Checks if a user is a member of the specified github org by calling the Github Api
+#
+#
+# Returns 204 if BOTH requester and user is a member
+# Returns 302 if requester is not an org members
+# Returns 404 if requester and user is not a member
+declare -F check_org_membership > /dev/null || check_org_membership() {
+  set +e
+    response=$(gh api \
+                -H "Accept: application/vnd.github+json" \
+                -H "X-GitHub-Api-Version: 2022-11-28" \
+                "/orgs/$org/members/$username" \
+                -i)
+    set -e
+  http_status=$(echo "$response" | grep -oP 'HTTP/[\d.]+\s+\K\d+')
+  log_debug "response_status_code: $http_status"
+  if [[ $http_status -eq 204]]; then
+      log_debug "Both Requestor and User are members of $org"
+      echo 0
+  elif [[ $http_status -eq 302]]; then
+      log_debug "Requestor is not a member of $org"
+      echo 1
+  elif [[ $http_status -eq 404]]; then
+      log_debug "User is not a member of  $org"
+      echo 2
+  fi
+}
+check_if_valid_org_user() {
+  if [ -n "$ghe_host" ]; then
+    log_debug "ghe_host provided - using $ghe_host"
+    export GH_ENTERPRISE_TOKEN=$access_token
+    export GH_HOST=$ghe_host
+  else
+    log_debug "ghe_host not provided - using github.com"
+    export GH_TOKEN=$access_token
+  fi
+
+  log_info "Checking if $username belongs to $org"
+  result = $(check_org_membership)
+  log_debug "result [$result]"
+
+  if [ "$result" -eq 0 ]; then
+    log_debug "$org is a valid org for $username"
+    return 0
+  else
+    return 1
+  fi
+
+}
+
 check_if_valid_user() {
+  if [ -n "$ghe_host" ]; then
+    log_debug "ghe_host provided - using $ghe_host"
+    export GH_ENTERPRISE_TOKEN=$access_token
+    export GH_HOST=$ghe_host
+  else
+    log_debug "ghe_host not provided - using github.com"
+    export GH_TOKEN=$access_token
+  fi
+
   if [ "$number_of_users" -gt 0 ]; then
     log_info "Checking [$number_of_users] users"
     for ((i = 0; i < number_of_users; i++)); do
@@ -53,13 +114,20 @@ check_if_valid_user() {
       log_debug "Checking user: $user"
       if [ "$user" == "$BUILD_CREATED_BY" ]; then
         log_debug "Found valid user: $user == $BUILD_CREATED_BY"
-        global_is_valid=1  # Early return if a match is found
+        log_info "Checking if $username belongs to $org"
+        result = $(check_org_membership)
+        log_debug "result [$result]"
+        if [ "$result" -eq 0 ]; then
+          global_is_valid=1  # Early return if a match is found
+        fi
         return 0
       fi
     done
   fi
 }
-#test
+
+
+
 # Function: check_team_membership
 #
 # Description: Checks if the user is a member of the specified team by calling the GitHub API. The function uses
