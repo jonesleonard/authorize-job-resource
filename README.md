@@ -13,7 +13,7 @@ in [karthikraina32/concourse-trigger-guard](https://github.com/karthikraina32/co
 * `organization`: *Required.* The name of the organization to authorize users and/or teams under.
 * `teams`: *Optional.* A list of teams to authorize within the given organization. Required if `users` is not specified.
 * `users`: *Optional.* The name of the user to authorize. Required if `teams` is not specified.
-* `access_token`: *Required.* A GitHub token with `read:org` scope.
+* `access_token`: *Required.* A GitHub token with `read:org` scope if using GHEC. Use `admin:org` scope if using with GHES.
 * `ghe_host`: *Optional.* The hostname of the GitHub Enterprise instance to communicate with the GitHub API.
 * `suffix`: *Optional.* A suffix to append to the `$BUILD_CREATED_BY` metadata environment variable. This is useful when
   using GitHub Enterprise Cloud and your company appends a suffix to the username.
